@@ -5,21 +5,23 @@ import '../modele/Redacteur.dart';
 class DatabaseManager {
   static Database? _database;
 
-  //initialiser la base de données
   static Future<Database> initDB() async {
     if (_database != null) return _database!;
-    String path = join(await getDatabasesPath(), 'redacteur.db');
+
+    final dbDir = await getDatabasesPath();
+    final path = join(dbDir, 'redacteur.db');
+
     _database = await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) async {
         await db.execute('''
-        CREATE TABLE users (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          nom TEXT,
-          prenom TEXT,
-          email TEXT
-        )
+          CREATE TABLE redacteur(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nom TEXT,
+            prenom TEXT,
+            email TEXT
+          )
         ''');
       },
     );
@@ -29,13 +31,13 @@ class DatabaseManager {
   // insérer un rédacteur
   static Future<int> insertRedacteur(Redacteur redacteur) async {
     final db = await initDB();
-    return await db.insert('redacteurs', redacteur.toMap());
+    return await db.insert('redacteur', redacteur.toMap());
   }
 
   //Récupérer tous les rédacteurs
   static Future<List<Redacteur>> getAllRedacteurs() async {
     final db = await initDB();
-    final List<Map<String, dynamic>> maps = await db.query('redacteurs');
+    final List<Map<String, dynamic>> maps = await db.query('redacteur');
     return List.generate(maps.length, (i) {
       return Redacteur(
         id: maps[i]['id'],
@@ -50,7 +52,7 @@ class DatabaseManager {
   static Future<int> updateRedacteur(Redacteur redacteur) async {
     final db = await initDB();
     return await db.update(
-      'redacteurs',
+      'redacteur',
       redacteur.toMap(),
       where: 'id = ?',
       whereArgs: [redacteur.id],
@@ -60,6 +62,6 @@ class DatabaseManager {
   //Supprimer un rédacteur
   static Future<int> deleteRedacteur(int id) async {
     final db = await initDB();
-    return await db.delete('rédacteurs', where: 'id = ?', whereArgs: [id]);
+    return await db.delete('redacteur', where: 'id = ?', whereArgs: [id]);
   }
 }

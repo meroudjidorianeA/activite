@@ -1,7 +1,18 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../modele/redacteurs_interface.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Requis pour Windows / macOS / Linux (pas pour Android/iOS)
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
   runApp(const MonAppli());
 }
 
@@ -43,7 +54,12 @@ class PageAccueil extends StatelessWidget {
             },
           ),
         ),
-        actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.white),
+            onPressed: () {},
+          ),
+        ],
       ),
 
       // Menu drawer latéral
