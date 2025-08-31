@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../modele/redacteurs_interface.dart';
 
 void main() {
   runApp(const MonAppli());
@@ -9,35 +10,79 @@ class MonAppli extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Magazine',
+    return MaterialApp(
+      title: 'Magazine Infos',
       debugShowCheckedModeBanner: false,
-      home: PageAccueil(),
+      home: const PageAccueil(),
     );
   }
 }
 
+// Page Accueil
 class PageAccueil extends StatelessWidget {
   const PageAccueil({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // App Bar
       appBar: AppBar(
         title: const Text(
           "Magazine infos",
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
-        leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}),
-        actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
+        backgroundColor: Colors.pink,
+        elevation: 0,
+        // Utilisation du builder pour un bon contexte
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+        actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
       ),
+
+      // Menu drawer latéral
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.pink),
+              child: Text(
+                'Menu ',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person, color: Colors.pink),
+              title: const Text("Rédacteurs"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RedacteursInterface(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
-          children: [
-            Image(image: AssetImage("assets/images/magazine.JPG")),
+          children: const [
+            Image(
+              image: AssetImage("assets/images/magazine.JPG"),
+              fit: BoxFit.cover,
+            ),
             PartieTitre(),
             PartieTexte(),
             PartieIcone(),
@@ -47,11 +92,11 @@ class PageAccueil extends StatelessWidget {
       ),
 
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.pink,
         onPressed: () {
-          print("Tu as cliqué dessus");
+          debugPrint("Tu as cliqué dessus");
         },
-        child: Text(
+        child: const Text(
           "Click",
           style: TextStyle(fontSize: 16, color: Colors.white),
         ),
@@ -60,6 +105,7 @@ class PageAccueil extends StatelessWidget {
   }
 }
 
+// Partie titre
 class PartieTitre extends StatelessWidget {
   const PartieTitre({super.key});
 
@@ -68,7 +114,7 @@ class PartieTitre extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -76,7 +122,7 @@ class PartieTitre extends StatelessWidget {
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
           ),
           Text(
-            'Votre magazine numérique, votre source d inspiration',
+            'Votre magazine numérique, votre source d\'inspiration',
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
         ],
@@ -85,6 +131,7 @@ class PartieTitre extends StatelessWidget {
   }
 }
 
+// Partie texte
 class PartieTexte extends StatelessWidget {
   const PartieTexte({super.key});
 
@@ -92,13 +139,17 @@ class PartieTexte extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Text(
-        "Magazine Infos est bien plus qu'un simple magazine numériqued'information. C'est votre passerelle vers le monde, une source inestimable de connaissances et d'actualité soigneusement sélectionnés pour vous éclairer sur les enjeux mondiaux, la culture, la science et voire les divertissements (les jeux). ",
+      child: const Text(
+        "Magazine Infos est bien plus qu'un simple magazine numérique d'information. "
+        "C'est votre passerelle vers le monde, une source inestimable de connaissances et d'actualités "
+        "soigneusement sélectionnées pour vous éclairer sur les enjeux mondiaux, la culture, la science "
+        "et même les divertissements (les jeux).",
       ),
     );
   }
 }
 
+// Partie icone
 class PartieIcone extends StatelessWidget {
   const PartieIcone({super.key});
 
@@ -108,49 +159,35 @@ class PartieIcone extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Column(
-              children: [
-                const Icon(Icons.phone, color: Colors.pink),
-                const SizedBox(height: 5),
-                Text('Tel'.toUpperCase(), style: TextStyle(color: Colors.pink)),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Column(
-              children: [
-                const Icon(Icons.phone, color: Colors.pink),
-                const SizedBox(height: 5),
-                Text(
-                  'Mail'.toUpperCase(),
-                  style: TextStyle(color: Colors.pink),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Column(
-              children: [
-                const Icon(Icons.phone, color: Colors.pink),
-                const SizedBox(height: 5),
-                Text(
-                  'Partage'.toUpperCase(),
-                  style: TextStyle(color: Colors.pink, letterSpacing: 1.0),
-                ),
-              ],
-            ),
-          ),
+        children: const [
+          _IconeItem(icon: Icons.phone, label: 'TEL'),
+          _IconeItem(icon: Icons.mail, label: 'MAIL'),
+          _IconeItem(icon: Icons.share, label: 'PARTAGE'),
         ],
       ),
     );
   }
 }
 
+class _IconeItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _IconeItem({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.pink),
+        SizedBox(height: 5),
+        Text(label, style: const TextStyle(color: Colors.pink)),
+      ],
+    );
+  }
+}
+
+// Partie rubrique
 class PartieRubrique extends StatelessWidget {
   const PartieRubrique({super.key});
 
